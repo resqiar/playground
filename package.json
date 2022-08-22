@@ -1,0 +1,11 @@
+{
+  "name": "playground",
+  "version": "0.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/resqiar/playground.git",
+  "author": "resqiar <resqiageng@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
