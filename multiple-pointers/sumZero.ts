@@ -26,9 +26,9 @@ function sumZero(sortedArray: number[]): number[] | undefined {
 }
 
 // NOTE: input parameter must be sorted
-const a: number[] = [-4, -3, 1, 0, 2, 3, 5]; // [-3, 3]
-const b: number[] = [-4, -2, 1, 0, 2, 3, 5]; // [-2, 2]
-const c: number[] = [-4, -1, 1, 0, 2, 3, 5]; // undefined
+const a: number[] = [-4, -3, -1, 0, 2, 3, 5]; // [-3, 3]
+const b: number[] = [-4, -2, -1, 0, 2, 3, 5]; // [-2, 2]
+const c: number[] = [-4, -1, -1, 0, 2, 3, 5]; // undefined
 
 console.log(sumZero(a));
 console.log(sumZero(b));
