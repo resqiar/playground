@@ -1,7 +1,7 @@
 ### How to run
 
 1. Make sure you have NodeJS installed, if not, install them [here](https://nodejs.org/en/download)
-2. Run the following command in your terminal for a specific files.
+2. Run the following command in your terminal for a specific file.
 
 ```bash
   npx ts-node <FILE_NAME>
