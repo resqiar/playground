@@ -158,18 +158,114 @@ class SinglyLinkedList {
   }
 
   set(index: number, value: any) {
-    if (index < 0 || index >= this.length) return null;
+    const node = this.get(index);
 
-    let count = 0;
-    let current = this.head;
-
-    while (count < index) {
-      current = current?.next;
-      count++;
+    if (node) {
+      node.value = value;
+      return node;
     }
 
-    current!.value = value;
-    return current;
+    return null;
+  }
+
+  insert(index: number, value: any) {
+    // If the index is negative and more than the list's length
+    if (index < 0 || index > this.length) return false;
+
+    // If the index is at the beginning of the list, use unshift instead
+    if (index === 1) return !!this.unshift(value);
+
+    // If the index is at the last of the list, use push instead
+    if (index === this.length) return !!this.push(value);
+
+    // Take the previous node before index
+    const pre = this.get(index - 1);
+    // Save the next node of pre
+    const after = pre?.next;
+
+    // Create a new node to be inserted
+    const newNode = new LLNode(value);
+
+    // Point the next node from pre to the new Node
+    if (pre?.next) pre.next = newNode;
+
+    // Point the next node from new Node to after
+    newNode.next = after;
+
+    // Increment length
+    this.length += 1;
+
+    return true;
+  }
+
+  remove(index: number) {
+    // If the index is negative and more than the list's length
+    if (index < 0 || index >= this.length) return false;
+
+    // If the index is at the beginning of the list, use unshift instead
+    if (index === 1) return this.shift();
+
+    // If the index is at the last of the list, use push instead
+    if (index === this.length) return this.pop();
+
+    // Take the previous node before index
+    const pre = this.get(index - 1);
+    const current = this.get(index);
+
+    // Save the next node of current
+    const after = current?.next;
+
+    // Point the next node from pre to the new Node
+    pre!.next = after;
+
+    // Increment length
+    this.length -= 1;
+
+    return true;
+  }
+
+  reverse() {
+    // If the current length is 0
+    if (!this.length) return false;
+    // If the current length is 1
+    if (this.length === 1) return this;
+
+    // Keep the head and tail
+    const head = this.head;
+    const tail = this.tail;
+
+    // Reverse the head and tail
+    this.head = tail;
+    this.tail = head;
+
+    // Keep the previous value
+    let previous = this.tail;
+
+    // Keep the current value
+    let current = head?.next;
+
+    // While there is a current value, do a loop
+    while (current) {
+      // We need to keep track of next value of current.
+      // This will be used to update the current value
+      // to the next point, otherwise it will looping forever.
+      const next = current.next;
+
+      // Reverse the current next to previous node
+      current.next = previous;
+
+      // Update the previous point to current
+      previous = current;
+
+      // Update the current to the next point
+      current = next;
+    }
+
+    // AT THIS POINT WE ALREADY REACH THE LAST
+    // POINT OF THE LIST, we can update the tail
+    // to be null.
+    this.tail!.next = null;
+    return this;
   }
 
   static mapToArray(list: SinglyLinkedList) {
@@ -213,28 +309,42 @@ sll.push("Third Node");
 // console.log(sll);
 
 // SHIFT
-console.log("============== SHIFT =============");
-sll.shift();
-console.log(sll);
+// console.log("============== SHIFT =============");
+// sll.shift();
+// console.log(sll);
 
-// UNSHIFT
-console.log("============== UNSHIFT =============");
-const newSll = new SinglyLinkedList();
-newSll.unshift("New Node");
-console.log(newSll);
+// // UNSHIFT
+// console.log("============== UNSHIFT =============");
+// const newSll = new SinglyLinkedList();
+// newSll.unshift("New Node");
+// console.log(newSll);
 
-sll.unshift("NEW FROM UNSHIFT");
+// sll.unshift("NEW FROM UNSHIFT");
 
-// MAP TO ARRAY
-console.log("============== MAP TO ARRAY =============");
-console.log(SinglyLinkedList.mapToArray(sll));
+// // MAP TO ARRAY
+// console.log("============== MAP TO ARRAY =============");
+// console.log(SinglyLinkedList.mapToArray(sll));
 
-console.log("============== GET =============");
-console.log(sll.get(2));
+// console.log("============== GET =============");
+// console.log(sll.get(2));
 
-console.log("============== SET =============");
-console.log(sll.set(0, "UPDATED FROM SET"));
+// console.log("============== SET =============");
+// console.log(sll.set(0, "UPDATED FROM SET"));
 
-// MAP TO ARRAY
-console.log("============== MAP TO ARRAY =============");
-console.log(SinglyLinkedList.mapToArray(sll));
+// console.log("============== INSERT =============");
+// console.log(sll.length);
+// console.log(sll.insert(1, "IAM NEW!"));
+
+// console.log("============== REMOVE =============");
+// console.log(sll.remove(3));
+
+// // MAP TO ARRAY
+// console.log("============== MAP TO ARRAY =============");
+// console.log(SinglyLinkedList.mapToArray(sll));
+
+console.log(sll.push("I AM THE LAST, BUT REVERSED"));
+
+console.log("============== REVERSE =============");
+console.log("BEFORE REVERSE", SinglyLinkedList.mapToArray(sll));
+console.log(sll.reverse());
+console.log("AFTER REVERSE", SinglyLinkedList.mapToArray(sll));
