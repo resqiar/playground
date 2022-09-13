@@ -45,7 +45,7 @@ class DoublyLinkedList {
     // Increment the length of the value to be one
     this.length += 1;
 
-    return true;
+    return this;
   }
 
   pop() {
@@ -203,28 +203,42 @@ class DoublyLinkedList {
     return true;
   }
 
-  // reverse() {
-  //   if (!this.head) return false;
-  //   if (this.length === 1) return this;
+  reverse() {
+    if (!this.head) return false;
+    if (this.length === 1) return this;
 
-  //   let current: DLLNode | null = this.head;
+    // First thing first, keep track of the current head,
+    // and tail. This value will be used to switch the head
+    // and the tail respectively.
+    const head = this.head;
+    const tail = this.tail;
 
-  //   const head = this.head;
-  //   const tail = this.tail;
+    // Switch head as tail
+    // Switch tail as head
+    this.head = tail;
+    this.tail = head;
 
-  //   this.head = tail;
-  //   this.tail = head;
+    // Keep track of current value that will be used in a loop
+    // This value is updated to the next pointer inside of the loop.
+    let current: DLLNode | null = head;
 
-  //   while (current) {
-  //     let prev: DLLNode | null = current.prev;
-  //     current.prev = current.next;
-  //     current.next = prev;
+    while (current) {
+      // Keep track of current next and prev.
+      // These values will be switch over like the head and the tail.
+      const next: DLLNode | null = current.next;
+      const prev: DLLNode | null = current.prev;
 
-  //     current = current.prev;
-  //   }
+      // Switch next as prev
+      current.next = prev;
+      // Switch prev as next
+      current.prev = next;
 
-  //   return this;
-  // }
+      // Update the current to the next value
+      current = next;
+    }
+
+    return this;
+  }
 
   static mapToArray(dll: DoublyLinkedList, reverse?: boolean) {
     const result = [];
@@ -253,11 +267,9 @@ class DoublyLinkedList {
 
 const dll = new DoublyLinkedList();
 
-dll.push("First Node");
-dll.push("Second Node");
-dll.push("Third Node");
-dll.push("Last Node");
+dll.push("First Node").push("Second Node").push("Third Node").push("Last Node");
 
+console.log(dll.head?.next?.value);
 // dll.pop();
 // dll.shift();
 // dll.unshift("IAM NEW FROM unshift");
@@ -273,5 +285,5 @@ dll.push("Last Node");
 // // Print in reverse
 // console.log(DoublyLinkedList.mapToArray(dll, true));
 
-// console.log(dll.reverse());
+console.log(dll.reverse());
 console.log(DoublyLinkedList.mapToArray(dll));
