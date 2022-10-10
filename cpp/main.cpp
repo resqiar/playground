@@ -162,9 +162,19 @@ int main() {
   studentC->gender = 'M';
   studentC->gpa = 4.5;
 
+  // FOURTH STUDENT
+  Student *studentD = new Student();
+  studentD->id = 4;
+  studentD->fullname = "Toni";
+  studentD->dob = "1999-04-04";
+  studentD->grade = 'A';
+  studentD->gender = 'M';
+  studentD->gpa = 9.9;
+
   dll->push(*studentA);
   dll->push(*studentB);
   dll->push(*studentC);
+  dll->push(*studentD);
 
   cout << "LENGTH OF DLL " << dll->length << endl;
   // dll->pop();
