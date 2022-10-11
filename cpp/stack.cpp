@@ -134,10 +134,12 @@ string convert(string infix) {
 int main() {
   string infix;
 
+  cout << "ENTER THE INFIX :" << endl;
   getline(cin, infix);
 
   string postfix = convert(infix);
 
+  cout << "POSTFIX RESULT :" << endl;
   cout << postfix << endl;
 
   return 0;
