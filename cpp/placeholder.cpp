@@ -36,4 +36,19 @@ void dump(Stack *stack) {
   }
 }
 
-int main() { return 0; }
+int main() {
+  Stack *s = new Stack();
+
+  push(s, '+');
+  push(s, '-');
+  push(s, '*');
+  push(s, '/');
+
+  dump(s);
+
+  pop(s);
+
+  dump(s);
+
+  return 0;
+}

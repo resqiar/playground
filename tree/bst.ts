@@ -184,6 +184,56 @@ class BST {
     // finally return the result
     return result;
   }
+
+  DFS() {
+    if (!this.root) return;
+
+    // This array will be the result
+    // after traversing the tree.
+    const result: number[] = [];
+
+    function preOrd(node: BSTNode) {
+      if (!node.value) return;
+      // push the value to the result
+      result.push(node.value);
+      // recursively search left and right node,
+      // the invocation of the recursion will happen
+      // on the left side first until the end of the nodes (reaches a leaf),
+      // then back to the top and do the same with right nodes.
+      if (node.left) preOrd(node.left);
+      if (node.right) preOrd(node.right);
+    }
+
+    function postOrd(node: BSTNode) {
+      if (!node.value) return;
+      // recursively search left and right node,
+      // the invocation of the recursion will happen
+      // on the left side first until the end of the nodes (reaches a leaf),
+      // then back to the top and do the same with right nodes.
+      if (node.left) postOrd(node.left);
+      if (node.right) postOrd(node.right);
+      // push the value to the result
+      result.push(node.value);
+    }
+
+    function inOrd(node: BSTNode) {
+      if (!node.value) return;
+      // recursively search left and right node,
+      // the invocation of the recursion will happen
+      // on the left side first until the end of the nodes (reaches a leaf),
+      // then back to the top and do the same with right nodes.
+      if (node.left) inOrd(node.left);
+      // push the value to the result
+      result.push(node.value);
+      if (node.right) inOrd(node.right);
+    }
+
+    // invoke from the root
+    // preOrd(this.root);
+    // postOrd(this.root);
+    inOrd(this.root);
+    return result;
+  }
 }
 
 const q = new BSTQueue();
@@ -214,19 +264,31 @@ const newBst = new BST();
 // let end = performance.now();
 // console.log("LINEAR INSERT TOOK", (end - start) / 1000, "s");
 
-let start = performance.now();
-for (let i = 0; i < 100_000; i++) {
-  const rand = Math.floor(Math.random() * 100_000);
-  newBst.insert(rand);
-}
-let end = performance.now();
-console.log("BINARY INSERT TOOK", (end - start) / 1000, "s");
+// let start = performance.now();
+// for (let i = 0; i < 100_000; i++) {
+//   const rand = Math.floor(Math.random() * 100_000);
+//   newBst.insert(rand);
+// }
+// let end = performance.now();
+// console.log("BINARY INSERT TOOK", (end - start) / 1000, "s");
 
-start = performance.now();
-const res = newBst.search(69);
-end = performance.now();
+// start = performance.now();
+// const res = newBst.search(69);
+// end = performance.now();
 
-console.log(res);
-console.log("SEARCH TOOK", end - start, "ms");
+// console.log(res);
+// console.log("SEARCH TOOK", end - start, "ms");
 
-console.log(newBst.BFS());
+// console.log(newBst.BFS());
+
+newBst.insert(20);
+newBst.insert(17);
+newBst.insert(8);
+newBst.insert(18);
+newBst.insert(19);
+
+newBst.insert(26);
+newBst.insert(25);
+newBst.insert(30);
+
+console.log(newBst.DFS());

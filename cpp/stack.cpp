@@ -47,14 +47,6 @@ char pop(Stack *stack) {
   return temp;
 }
 
-// Print or dump all the values (operator) inside
-// the stack. This might only needed in debug purposes.
-void dump(Stack *stack) {
-  for (int i = 0; i <= stack->tos; i++) {
-    cout << stack->optr[i] << endl;
-  }
-}
-
 bool isOperand(char value) {
   // if operand add to the postfix expression
   if (value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' ||
