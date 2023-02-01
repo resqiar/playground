@@ -86,6 +86,7 @@ namespace matrix {
   }
 
   interface Edge {
+    vtx: string;
     weight: number;
   }
 
@@ -118,8 +119,83 @@ namespace matrix {
       const v2Idx = this.indices[v2];
 
       // update undirected graph's edges
-      this.matrix[v1Idx][v2Idx] = { weight };
-      this.matrix[v2Idx][v1Idx] = { weight };
+      this.matrix[v1Idx][v2Idx] = { vtx: v2, weight };
+      this.matrix[v2Idx][v1Idx] = { vtx: v1, weight };
+    }
+
+    shortestPath(start: string, end: string) {
+      if (!this.indices[start] && !this.indices[end])
+        throw new Error("vertices not found");
+
+      const pq = new PriorityQueue();
+      const distance: { [vtx: string]: number } = {};
+      const from: { [vtx: string]: string | null } = {};
+
+      // set initial value
+      for (let i = 0; i < this.vertices.length; i++) {
+        if (this.vertices[i] === start) {
+          pq.enqueue(this.vertices[i], 0);
+          distance[this.vertices[i]] = 0;
+        } else {
+          pq.enqueue(this.vertices[i], Infinity);
+          distance[this.vertices[i]] = Infinity;
+        }
+
+        from[this.vertices[i]] = null;
+      }
+
+      while (pq.heap.length) {
+        const dequeued = pq.dequeue();
+
+        if (!dequeued) return;
+
+        // ...if it's the end vertex. If it is, then construct
+        // the path by tracing back the previous vertices from the end to the start.
+        if (dequeued.vtx === end) {
+          const result = [end];
+
+          let temp = end;
+
+          // Trace back (Backtracking) the from value until
+          // it found the starting vertex.
+          while (true) {
+            if (temp === start) break;
+
+            const current = from[temp];
+            if (!current) break;
+
+            result.push(current);
+            temp = current;
+          }
+
+          return result.reverse();
+        }
+
+        const temp = this.matrix[this.indices[dequeued.vtx]];
+
+        // loop current rows
+        for (let i = 0; i < temp.length; i++) {
+          if (typeof temp[i] === "object") {
+            const current = temp[i] as Edge;
+            // ...calculate the new distance of each vertex.
+            // distance of previous dequeued value + current vertex weight
+            const calculated = distance[dequeued.vtx] + current.weight;
+
+            // 5.3 If the calculated distance is less than the current distance
+            // of the adjacent vertex...
+            if (calculated < distance[current.vtx]) {
+              // update it in the "distance" object, set the previous vertex
+              // in the "from" object...
+              distance[current.vtx] = calculated;
+              from[current.vtx] = dequeued.vtx;
+
+              // ...and enqueue the updated vertex in the priority queue with new priority.
+              // should be optimized instead of enqueing a new result
+              pq.enqueue(current.vtx, calculated);
+            }
+          }
+        }
+      }
     }
   }
 
@@ -127,30 +203,34 @@ namespace matrix {
 
   g.addVertex("SBY");
   g.addVertex("JKT");
-
-  g.addEdge("SBY", "JKT", 2);
-
   g.addVertex("BKS");
+  g.addVertex("YGY");
+  g.addVertex("SOLO");
+  g.addVertex("SMG");
+  g.addVertex("MLG");
 
-  console.log("======= V E R T I C E S =======");
-  console.log(g.vertices);
+  g.addEdge("JKT", "SMG", 200);
+  g.addEdge("JKT", "YGY", 450);
+  g.addEdge("JKT", "BKS", 30);
 
-  console.log("======= M A R T I X =======");
-  console.log(g.matrix);
+  g.addEdge("SMG", "SBY", 350);
+  g.addEdge("SMG", "SOLO", 70);
 
-  console.log("======= I N D I C E S =======");
-  console.log(g.indices);
+  g.addEdge("SOLO", "YGY", 20);
+  g.addEdge("YGY", "MLG", 150);
 
-  const pq = new PriorityQueue();
-  console.log(pq.enqueue("SBY", 5));
-  console.log(pq.enqueue("JKT", 2));
-  console.log(pq.enqueue("BKS", 3));
-  console.log(pq.enqueue("MLG", 7));
-  console.log(pq.enqueue("BWN", 1));
+  g.addEdge("SBY", "MLG", 75);
 
-  console.log(pq.heap);
+  // RESULT SHOULD BE
+  // ["JKT", "SMG", "SOLO", "YGY", "MLG", "SBY"]
+  console.log(g.shortestPath("JKT", "SBY"));
 
-  while (pq.heap.length) {
-    console.log(pq.dequeue());
-  }
+  // console.log("======= V E R T I C E S =======");
+  // console.log(g.vertices);
+
+  // console.log("======= M A R T I X =======");
+  // console.log(g.matrix);
+
+  // console.log("======= I N D I C E S =======");
+  // console.log(g.indices);
 }
