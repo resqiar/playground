@@ -151,12 +151,15 @@ void handleTriggerLED(AsyncWebServerRequest *request) {
 
 void setup() {
   Serial.begin(115200);
-
-  WiFi.softAP(ssid, password);
-  IPAddress IP = WiFi.softAPIP();
   
-  Serial.print("AP IP address: ");
-  Serial.println(IP);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+    
+  // WiFi.softAP(ssid, password);
+  // IPAddress IP = WiFi.softAPIP();
 
   server.on("/led", handleTriggerLED);
       
