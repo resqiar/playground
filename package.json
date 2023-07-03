@@ -1,11 +1,15 @@
 {
+  "type": "module",
   "name": "playground",
   "version": "0.0.0",
-  "main": "index.js",
+  "exports": "./index.js",
   "repository": "https://github.com/resqiar/playground.git",
-  "author": "resqiar <resqiageng@gmail.com>",
+  "author": "resqiar <resqiagengr@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "@swc/core": "1.3.67",
+    "@swc/helpers": "^0.5.1",
+    "regenerator-runtime": "^0.13.11",
+    "typescript": "4.7.4"
   }
 }
