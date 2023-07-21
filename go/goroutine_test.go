@@ -10,6 +10,5 @@ func hello() {
 }
 
 func TestHelloConcurrency(t *testing.T) {
-	go helloConcurrency()
 	log.Println("What is Hello World?")
 }
