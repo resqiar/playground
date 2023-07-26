@@ -1,10 +1,12 @@
 package main
 
 import (
-	"bytes" 
+	"bytes"
 	"fmt"
 	"log"
 	"math"
+	"playground/rw"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -24,6 +26,8 @@ func randomize(index int) int {
 }
 
 func main() {
+	rw.RWMDemo()
+
 	// for i := 0; i < 1_000_000; i++ {
 	// 	go randomize(i)
 	// }
@@ -75,19 +79,77 @@ func main() {
 
 	// demonstrateDeadlock()
 	// demonstrateLivelock()
-	demonstrateStarvation()
+	// demonstrateStarvation()
+
+	var wg sync.WaitGroup
+
+	message := "[MAIN] Hello "
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		message += "[GOROUTINE] World"
+	}()
+	wg.Wait()
+
+	log.Println(message)
+
+	for _, message := range []string{"hello", "world", "whatever"} {
+		wg.Add(1)
+
+		go func(msg string) { // remove the param and modify directly the message and it will break
+			defer wg.Done()
+			log.Println("[GOROUTINE]", msg)
+		}(message)
+	}
+	wg.Wait()
+
+	// benchmarck goroutines
+	// benchmarkGoroutine()
+
+	// RW Mutex
+}
+
+func benchmarkGoroutine() {
+	memStat := func() uint64 {
+		runtime.GC()
+		var s runtime.MemStats
+		runtime.ReadMemStats(&s)
+		return s.Sys
+	}
+
+	var channel <-chan interface{}
+	var wg sync.WaitGroup
+
+	doNothing := func() {
+		wg.Done()
+		<-channel
+	}
+
+	const TOTAL_GOROUTINE = 1e6
+
+	wg.Add(TOTAL_GOROUTINE)
+	memBefore := memStat()
+
+	for i := TOTAL_GOROUTINE; i > 0; i-- {
+		go doNothing()
+	}
+
+	wg.Wait()
+	memAfter := memStat()
+
+	log.Println(math.Floor(float64(memAfter-memBefore)/TOTAL_GOROUTINE/1000), "kb")
 }
 
 func demonstrateDeadlock() {
 	type SharedValue struct {
-		mu sync.Mutex
+		mu  sync.Mutex
 		val int
 	}
 
 	var wg sync.WaitGroup
-	printSum := func (a, b *SharedValue)  {
-		// defer the waitgroup to done (dont wait anymore) 
-		// when the function is done 
+	printSum := func(a, b *SharedValue) {
+		// defer the waitgroup to done (dont wait anymore)
+		// when the function is done
 		defer wg.Done()
 
 		a.mu.Lock()
@@ -98,38 +160,38 @@ func demonstrateDeadlock() {
 		b.mu.Lock()
 		defer b.mu.Unlock() // unlock when function return
 
-		log.Println(a.val + b.val) 
+		log.Println(a.val + b.val)
 	}
 
-	var a, b SharedValue 
+	var a, b SharedValue
 
 	wg.Add(2)
 	go printSum(&a, &b)
-	go printSum(&b, &a)  // circular dependecies 
-	wg.Wait() // deadlock occures here
+	go printSum(&b, &a) // circular dependecies
+	wg.Wait()           // deadlock occures here
 }
 
-func demonstrateLivelock()  {
+func demonstrateLivelock() {
 	cadence := sync.NewCond(&sync.Mutex{})
 
-	go func ()  {
+	go func() {
 		for range time.Tick(1 * time.Second) {
 			// makes other process waits for this operation?
 			cadence.Broadcast()
 		}
 	}()
 
-	takeStep := func ()  {
-		cadence.L.Lock()	
+	takeStep := func() {
+		cadence.L.Lock()
 		cadence.Wait()
-		cadence.L.Unlock()	
+		cadence.L.Unlock()
 	}
 
-	tryDirection := func (direction string, dir *int32, out *bytes.Buffer)  bool {
+	tryDirection := func(direction string, dir *int32, out *bytes.Buffer) bool {
 		log.Println(direction)
 
 		atomic.AddInt32(dir, 1) // move to right side?
-		takeStep() // simulate a same rate of movement between all parties
+		takeStep()              // simulate a same rate of movement between all parties
 
 		if atomic.LoadInt32(dir) == 1 {
 			log.Println(out, ". Success passing")
@@ -142,20 +204,20 @@ func demonstrateLivelock()  {
 
 	var left, right int32
 
-	moveLeft := func (out*bytes.Buffer) bool  { return tryDirection("left", &left, out) }
-	moveRight := func (out*bytes.Buffer) bool  { return tryDirection("right", &right, out) }
+	moveLeft := func(out *bytes.Buffer) bool { return tryDirection("left", &left, out) }
+	moveRight := func(out *bytes.Buffer) bool { return tryDirection("right", &right, out) }
 
 	walk := func(walking *sync.WaitGroup, name string) {
 
-	var out bytes.Buffer
+		var out bytes.Buffer
 
-	defer func() { fmt.Println(out.String()) }()
+		defer func() { fmt.Println(out.String()) }()
 
-	defer walking.Done()
+		defer walking.Done()
 
-	fmt.Fprintf(&out, "%v is trying to scoot:", name)
+		fmt.Fprintf(&out, "%v is trying to scoot:", name)
 
-	for i := 0; i < 5; i++ {
+		for i := 0; i < 5; i++ {
 			if moveLeft(&out) || moveRight(&out) {
 				return
 			}
@@ -171,12 +233,12 @@ func demonstrateLivelock()  {
 	peopleInHallway.Wait()
 }
 
-func demonstrateStarvation()  {
+func demonstrateStarvation() {
 	var wg sync.WaitGroup
 	var memLock sync.Mutex
 	var maxRun = 1 * time.Second
 
-	greedyWorker := func ()  {
+	greedyWorker := func() {
 		defer wg.Done()
 
 		var job int
@@ -188,11 +250,11 @@ func demonstrateStarvation()  {
 
 			job++
 		}
-		
+
 		log.Println("GREEDY WORKER : ", job)
 	}
 
-	politeWorker := func ()  {
+	politeWorker := func() {
 		defer wg.Done()
 
 		var job int
@@ -212,7 +274,7 @@ func demonstrateStarvation()  {
 
 			job++
 		}
-		
+
 		log.Println("POLITE WORKER : ", job)
 	}
 
