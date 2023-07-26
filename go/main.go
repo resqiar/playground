@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"playground/rw"
+	"playground/sort"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -26,7 +26,9 @@ func randomize(index int) int {
 }
 
 func main() {
-	rw.RWMDemo()
+	sort.BubbleSort()
+
+	// rw.RWMDemo()
 
 	// for i := 0; i < 1_000_000; i++ {
 	// 	go randomize(i)
@@ -81,27 +83,27 @@ func main() {
 	// demonstrateLivelock()
 	// demonstrateStarvation()
 
-	var wg sync.WaitGroup
-
-	message := "[MAIN] Hello "
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		message += "[GOROUTINE] World"
-	}()
-	wg.Wait()
-
-	log.Println(message)
-
-	for _, message := range []string{"hello", "world", "whatever"} {
-		wg.Add(1)
-
-		go func(msg string) { // remove the param and modify directly the message and it will break
-			defer wg.Done()
-			log.Println("[GOROUTINE]", msg)
-		}(message)
-	}
-	wg.Wait()
+	// var wg sync.WaitGroup
+	//
+	// message := "[MAIN] Hello "
+	// wg.Add(1)
+	// go func() {
+	// 	defer wg.Done()
+	// 	message += "[GOROUTINE] World"
+	// }()
+	// wg.Wait()
+	//
+	// log.Println(message)
+	//
+	// for _, message := range []string{"hello", "world", "whatever"} {
+	// 	wg.Add(1)
+	//
+	// 	go func(msg string) { // remove the param and modify directly the message and it will break
+	// 		defer wg.Done()
+	// 		log.Println("[GOROUTINE]", msg)
+	// 	}(message)
+	// }
+	// wg.Wait()
 
 	// benchmarck goroutines
 	// benchmarkGoroutine()
