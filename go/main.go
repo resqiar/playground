@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"playground/sort"
+	"playground/rw"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -26,7 +26,8 @@ func randomize(index int) int {
 }
 
 func main() {
-	sort.BubbleSort()
+	// sort.BubbleSort()
+	rw.QueueWaiting()
 
 	// rw.RWMDemo()
 
