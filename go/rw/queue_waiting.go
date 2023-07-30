@@ -22,7 +22,7 @@ func NewLimitedQueue(size int) *LimitedQueue {
 }
 
 func (q *LimitedQueue) Enqueue(value int) {
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(50 * time.Millisecond)
 
 	q.cond.L.Lock()
 	defer q.cond.L.Unlock()
@@ -41,7 +41,7 @@ func (q *LimitedQueue) Enqueue(value int) {
 }
 
 func (q *LimitedQueue) Dequeue() {
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond)
 
 	q.cond.L.Lock()
 	defer q.cond.L.Unlock()
@@ -51,7 +51,8 @@ func (q *LimitedQueue) Dequeue() {
 	}
 
 	// IMPORTANT: SIGNAL MUST COME AFTER UNLOCK!!!
-	// OTHERWISE, SEE FOR YOURSELF
+	// OTHERWISE, SEE FOR YOURSELF.
+	// Signal is a way to notify the longest goroutine that waiting.
 	defer q.cond.Signal()
 
 	log.Println("removing", q.data[0])
@@ -82,7 +83,7 @@ func QueueWaiting() {
 	}
 
 	// keep dequeuing until time passes the threshold
-	for t := time.Now(); time.Since(t) < 1*time.Second; {
+	for t := time.Now(); time.Since(t) < 100*time.Millisecond; {
 		go func() {
 			q.Dequeue()
 		}()
