@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"playground/channels"
 	"playground/rw"
 	"runtime"
 	"sync"
@@ -27,33 +28,34 @@ func randomize(index int) int {
 
 func main() {
 	// sort.BubbleSort()
+
 	rw.QueueWaiting()
 
-	var count int
-
-	increment := func() {
-		count += 1
-	}
-
-	var wg sync.WaitGroup
-	var once sync.Once
-
-	for i := 0; i < 10; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			once.Do(increment)
-		}()
-	}
-
-	wg.Wait()
-	log.Println(count)
-
-	// demonstrate pool
-	poolStart := time.Now()
-	rw.Pool()
-	poolEnd := time.Now()
-	log.Println("Time taken:", poolEnd.Sub(poolStart))
+	// var count int
+	//
+	// increment := func() {
+	// 	count += 1
+	// }
+	//
+	// var wg sync.WaitGroup
+	// var once sync.Once
+	//
+	// for i := 0; i < 10; i++ {
+	// 	wg.Add(1)
+	// 	go func() {
+	// 		defer wg.Done()
+	// 		once.Do(increment)
+	// 	}()
+	// }
+	//
+	// wg.Wait()
+	// log.Println(count)
+	//
+	// // demonstrate pool
+	// poolStart := time.Now()
+	// rw.Pool()
+	// poolEnd := time.Now()
+	// log.Println("Time taken:", poolEnd.Sub(poolStart))
 
 	// rw.RWMDemo()
 
@@ -136,6 +138,8 @@ func main() {
 	// benchmarkGoroutine()
 
 	// RW Mutex
+
+	channels.TestChannel()
 }
 
 func benchmarkGoroutine() {
