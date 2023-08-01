@@ -139,7 +139,8 @@ func main() {
 
 	// RW Mutex
 
-	channels.TestChannel()
+	// channels.TestChannel()
+	channels.SelectChan()
 }
 
 func benchmarkGoroutine() {

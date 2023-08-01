@@ -85,4 +85,27 @@ func TestChannel() {
 	for result := range intStream {
 		log.Println("Received:", result)
 	}
+
+	chanOwner := func() <-chan int {
+		intStream := make(chan int, 5)
+
+		go func() {
+			wg.Add(1)
+			defer wg.Done()
+			defer close(intStream)
+
+			for i := 0; i < 5; i++ {
+				intStream <- i
+			}
+		}()
+
+		return intStream
+	}
+
+	resStream := chanOwner()
+	for i := 0; i < 5; i++ {
+		log.Println(<-resStream)
+	}
+
+	wg.Wait()
 }
