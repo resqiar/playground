@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"playground/channels"
-	"playground/rw"
+	"playground/dsa"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -26,10 +25,29 @@ func randomize(index int) int {
 	return normalized
 }
 
+func fibonacci(n int32) []int32 {
+	result := make([]int32, n)
+
+	for i := int32(0); i < n; i++ {
+		if i == 0 {
+			result[i] = 0
+		} else if i == 1 {
+			result[i] = 1
+		} else {
+			// sum prior 2 number; at least index of 2
+			result[i] = result[i-2] + result[i-1]
+		}
+	}
+
+	return result
+}
+
 func main() {
+	dsa.Setup()
+	// log.Println(fibonacci(10))
 	// sort.BubbleSort()
 
-	rw.QueueWaiting()
+	// rw.QueueWaiting()
 
 	// var count int
 	//
@@ -140,7 +158,7 @@ func main() {
 	// RW Mutex
 
 	// channels.TestChannel()
-	channels.SelectChan()
+	// channels.SelectChan()
 }
 
 func benchmarkGoroutine() {
