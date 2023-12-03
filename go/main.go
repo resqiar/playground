@@ -42,8 +42,47 @@ func fibonacci(n int32) []int32 {
 	return result
 }
 
+func binary_search(haystack []int, needle int) bool {
+	start_point := 0
+	end_point := len(haystack)
+
+	log.Println("BS")
+
+	for start_point < end_point {
+		mid_point := int(math.Floor(float64(start_point+end_point) / 2))
+
+		log.Println(mid_point)
+
+		if mid_point == needle {
+			return true
+		}
+
+		if mid_point < needle {
+			start_point = mid_point + 1
+		}
+
+		if mid_point > needle {
+			end_point = mid_point - 1
+		}
+	}
+
+	return false
+}
+
 func main() {
 	dsa.Setup()
+
+	foo := []int{1, 3, 4, 69, 71, 81, 90, 99, 420, 1337, 69420}
+	log.Println(binary_search(foo, 69), "true")
+	log.Println(binary_search(foo, 1336), "false")
+
+	// expect(binary_fn(foo, 69)).toEqual(true)
+	// expect(binary_fn(foo, 1336)).toEqual(false)
+	// expect(binary_fn(foo, 69420)).toEqual(true)
+	// expect(binary_fn(foo, 69421)).toEqual(false)
+	// expect(binary_fn(foo, 1)).toEqual(true)
+	// expect(binary_fn(foo, 0)).toEqual(false)
+
 	// log.Println(fibonacci(10))
 	// sort.BubbleSort()
 
