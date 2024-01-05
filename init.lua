@@ -8,7 +8,7 @@ if not vim.loop.fs_stat(lazypath) then
     'clone',
     '--filter=blob:none',
     'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable', -- latest stable release
+    '--branch=stable',     -- latest stable release
     lazypath,
   }
 end
@@ -60,7 +60,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',          opts = {} },
+  { 'folke/which-key.nvim',                opts = {} },
 
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
@@ -91,8 +91,8 @@ require('lazy').setup({
       options = {
         -- Compiled file's destination location
         compile_path = vim.fn.stdpath("cache") .. "/nightfox",
-        compile_file_suffix = "_compiled", -- Compiled file suffix
-        transparent = true,                -- Disable setting background
+        compile_file_suffix = "_compiled",         -- Compiled file suffix
+        transparent = true,                        -- Disable setting background
       },
     }
   },
@@ -107,23 +107,18 @@ require('lazy').setup({
         theme = 'nightfox',
         component_separators = '|',
         section_separators = '',
+        always_divide_middle = true
       },
     },
   },
 
-  {
-    'lukas-reineke/indent-blankline.nvim',
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
-  },
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl",     opts = {} },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',         opts = {} },
+  { 'numToStr/Comment.nvim',               opts = {} },
 
   -- FzF
-  { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
+  { 'nvim-telescope/telescope.nvim',       branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
     build = 'make',
@@ -141,28 +136,24 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-  -- {
-  --     'akinsho/bufferline.nvim',
-  --     version = "*",
-  --     dependencies = 'nvim-tree/nvim-web-devicons',
-  --     opts = {
-  --         options = {
-  --             view = "multiwindow",
-  --             numbers = "ordinal",
-  --             number_style = "",
-  --             mappings = true,
-  --             max_name_length = 15,
-  --             tab_size = 15,
-  --             show_buffer_close_icons = false,
-  --             enforce_regular_tabs = false,
-  --         }
-  --     }
-  -- },
-
-  -- {
-  --   'akinsho/toggleterm.nvim',
-  --   version = "*",
-  -- },
+  {
+    'akinsho/bufferline.nvim',
+    version = "*",
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    opts = {
+      options = {
+        view = "multiwindow",
+        numbers = "none",
+        number_style = "",
+        mappings = true,
+        max_name_length = 15,
+        tab_size = 15,
+        show_buffer_close_icons = false,
+        enforce_regular_tabs = false,
+        show_tab_indicators = false
+      }
+    }
+  },
 
   { 'wakatime/vim-wakatime' },
 
@@ -174,6 +165,14 @@ require('lazy').setup({
     }
   }
 }, {})
+
+require("ibl").setup {
+  indent = { char = '┊' },
+  whitespace = {
+    remove_blankline_trail = false,
+  },
+  scope = { enabled = false },
+}
 
 -- my personal custom stuff
 vim.o.relativenumber = true
@@ -212,8 +211,8 @@ vim.cmd [[
     autocmd BufWritePre * :silent! lua vim.lsp.buf.format()
 ]]
 
--- vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>")
--- vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>")
+vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>")
+vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>")
 vim.keymap.set("n", "<leader>c", ":bd<CR>")
 
 -- Harpoon keybinds
@@ -226,21 +225,15 @@ harpoon:setup()
 vim.keymap.set("n", "<C-x>", function() harpoon:list():append() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
-vim.keymap.set("n", "<C-1>", function() harpoon:list():select(1) end)
-vim.keymap.set("n", "<C-2>", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<C-3>", function() harpoon:list():select(3) end)
-vim.keymap.set("n", "<C-4>", function() harpoon:list():select(4) end)
+vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
 
 vim.keymap.set("n", "<C-n>", function() harpoon:list():next() end)
 vim.keymap.set("n", "<C-b>", function() harpoon:list():prev() end)
 
 -- my personal custom stuff
-
--- Set highlight on search
-vim.o.hlsearch = true
-
--- Make line numbers default
-vim.wo.number = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -342,7 +335,7 @@ require('nvim-treesitter.configs').setup {
   textobjects = {
     select = {
       enable = true,
-      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,       -- Automatically jump forward to textobj, similar to targets.vim
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm
         ['aa'] = '@parameter.outer',
@@ -355,7 +348,7 @@ require('nvim-treesitter.configs').setup {
     },
     move = {
       enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
+      set_jumps = true,       -- whether to set jumps in the jumplist
       goto_next_start = {
         [']m'] = '@function.outer',
         [']]'] = '@class.outer',
