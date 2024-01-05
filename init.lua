@@ -8,7 +8,7 @@ if not vim.loop.fs_stat(lazypath) then
     'clone',
     '--filter=blob:none',
     'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable',     -- latest stable release
+    '--branch=stable', -- latest stable release
     lazypath,
   }
 end
@@ -91,8 +91,8 @@ require('lazy').setup({
       options = {
         -- Compiled file's destination location
         compile_path = vim.fn.stdpath("cache") .. "/nightfox",
-        compile_file_suffix = "_compiled",         -- Compiled file suffix
-        transparent = true,                        -- Disable setting background
+        compile_file_suffix = "_compiled", -- Compiled file suffix
+        transparent = true,                -- Disable setting background
       },
     }
   },
@@ -335,7 +335,7 @@ require('nvim-treesitter.configs').setup {
   textobjects = {
     select = {
       enable = true,
-      lookahead = true,       -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm
         ['aa'] = '@parameter.outer',
@@ -348,7 +348,7 @@ require('nvim-treesitter.configs').setup {
     },
     move = {
       enable = true,
-      set_jumps = true,       -- whether to set jumps in the jumplist
+      set_jumps = true, -- whether to set jumps in the jumplist
       goto_next_start = {
         [']m'] = '@function.outer',
         [']]'] = '@class.outer',
