@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"playground/dsa"
+	"playground/file"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -70,11 +70,14 @@ func binary_search(haystack []int, needle int) bool {
 }
 
 func main() {
-	dsa.Setup()
+	// file.SimulateBadUpdate()
+	file.SimulateBetterUpdate()
 
-	foo := []int{1, 3, 4, 69, 71, 81, 90, 99, 420, 1337, 69420}
-	log.Println(binary_search(foo, 69), "true")
-	log.Println(binary_search(foo, 1336), "false")
+	// dsa.Setup()
+	//
+	// foo := []int{1, 3, 4, 69, 71, 81, 90, 99, 420, 1337, 69420}
+	// log.Println(binary_search(foo, 69), "true")
+	// log.Println(binary_search(foo, 1336), "false")
 
 	// expect(binary_fn(foo, 69)).toEqual(true)
 	// expect(binary_fn(foo, 1336)).toEqual(false)
