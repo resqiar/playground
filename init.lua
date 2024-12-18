@@ -1,5 +1,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.opt.fileformat = "unix"
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -97,20 +98,20 @@ require('lazy').setup({
     }
   },
 
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = true,
-        theme = 'nightfox',
-        component_separators = '|',
-        section_separators = '',
-        always_divide_middle = true
-      },
-    },
-  },
+  -- {
+  --   -- Set lualine as statusline
+  --   'nvim-lualine/lualine.nvim',
+  --   -- See `:help lualine.txt`
+  --   opts = {
+  --     options = {
+  --       icons_enabled = true,
+  --       theme = 'nightfox',
+  --       component_separators = '|',
+  --       section_separators = '',
+  --       always_divide_middle = true
+  --     },
+  --   },
+  -- },
 
   { "lukas-reineke/indent-blankline.nvim", main = "ibl",     opts = {} },
 
@@ -134,6 +135,12 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
     build = ':TSUpdate',
+  },
+
+  {
+    "davidmh/mdx.nvim",
+    config = true,
+    dependencies = { "nvim-treesitter/nvim-treesitter" }
   },
 
   {
@@ -215,6 +222,45 @@ vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>")
 vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>")
 vim.keymap.set("n", "<leader>c", ":bd<CR>")
 
+-- register .templ filetype
+vim.filetype.add {
+  extension = {
+    templ = "templ"
+  }
+}
+
+-- Make sure we have a tree-sitter grammar for the language
+local treesitter_parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+treesitter_parser_config.templ = treesitter_parser_config.templ or {
+  install_info = {
+    url = "https://github.com/vrischmann/tree-sitter-templ.git",
+    files = { "src/parser.c", "src/scanner.c" },
+    branch = "master",
+  },
+}
+
+vim.treesitter.language.register('templ', 'templ')
+
+-- Register the LSP as a config
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+if not configs.templ then
+  configs.templ = {
+    default_config = {
+      cmd = { "templ", "lsp" },
+      filetypes = { 'templ' },
+      root_dir = require "lspconfig.util".root_pattern("go.mod", ".git"),
+      settings = {},
+    },
+  }
+end
+
+lspconfig.emmet_language_server.setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+  filetypes = { "html", "templ" },
+})
+
 -- Harpoon keybinds
 local harpoon = require("harpoon")
 
@@ -286,6 +332,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+      '--hidden',
+    },
     mappings = {
       i = {
         ['<C-u>'] = false,
@@ -315,6 +371,14 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set(
+  'n',
+  '<leader>fh', function()
+    require('telescope.builtin').find_files({
+      find_command = { 'rg', '--files', '--iglob', '!.git', '--hidden' }
+    })
+  end, { desc = "[F]ind [H]idden files" }
+)
 
 -- [[ Configure Treesitter ]]
 require('nvim-treesitter.configs').setup {
